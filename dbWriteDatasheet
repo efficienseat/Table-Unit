@@ -1,0 +1,81 @@
+#!/usr/bin/python
+
+import boto3
+
+
+# select service resource
+dynamodb = boto3.resource('dynamodb')
+
+
+################ Select Table #################################
+################################################################
+# Instantiate a table resource object without actually
+# creating a DynamoDB table. Note that the attributes of this table
+# are lazy-loaded: a request is not made nor are the attribute
+# values populated until the attributes
+# on the table resource are accessed or its load() method is called.
+table = dynamodb.Table('raspiTest')
+################################################################
+
+
+
+
+################ Print table time (example) ####################
+################################################################
+# Print out some data about the table.
+# This will cause a request to be made to DynamoDB and its attribute
+# values will be set based on the response.
+print(table.creation_date_time)
+###############################################################
+
+
+
+############### Add item to table in DB #######################
+###############################################################
+#creates an item for the table, NOTE: need to have the keys as
+#established when the table was made
+#for raspiTest, used primary key as device_id (string)
+#               and sort key as     timestamp (string)
+table.put_item(
+        Item={
+                'device_id': "01",  #say key name, give correct type
+                'timestamp': "time", #ditto
+                'cmd': 1,
+                'state': 0,
+                'pin': 2,
+        }
+)
+##############################################################
+
+
+
+############### Retrieve item information from DB ############
+##############################################################
+#retrieves information for an item, identifed by item specific key values
+#stores item in response
+response = table.get_item(
+        Key={
+                'device_id': "cat",
+                'timestamp': "12/05/2017"
+        }
+)
+item = response['Item']
+print(item)
+##############################################################
+
+
+
+############## Update item information #######################
+##############################################################
+table.update_item(
+        Key={
+                'device_id': "cat",
+                'timestamp': "12/05/2017",
+        },
+        UpdateExpression='SET favorite_second_person  = :val1',
+        ExpressionAttributeValues={
+                ':val1': "meeeeeee matt"
+        }
+)
+##############################################################
+
