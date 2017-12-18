@@ -1,0 +1,130 @@
+#!/usr/bin/python
+
+import boto3
+import sys
+print (sys.argv)
+
+# select service resource
+dynamodb = boto3.resource('dynamodb')
+
+
+# Select Table
+table = dynamodb.Table('Tables')
+
+
+#show original table status
+original = table.get_item(
+        Key={
+                'tableID': 23
+        },
+        ProjectionExpression='tableAvail, seat1, seat2, seat3, seat4'
+)
+item = original['Item']
+print("This is the table's current status:\n")
+print(item)
+print("\n")
+
+#take user input for new table status
+userAvail = raw_input("Please enter a new number of available seats (0-4) for a$
+print(userAvail)
+print("\n")
+
+#change table seating status as per user input
+if (userAvail == "0"):
+
+        table.update_item(
+                Key={
+                        'tableID': 23,
+                },
+                UpdateExpression='SET seat1 = :newStatus1, seat2 = :newStatus2,$
+                ExpressionAttributeValues={
+                        ':newStatus1': 1,
+                        ':newStatus2': 1,
+                        ':newStatus3': 1,
+                        ':newStatus4': 1,
+                        ':newAvail': 0
+                }
+        )
+elif (userAvail == "1"):
+
+        table.update_item(
+                Key={
+                        'tableID': 23,
+                },
+                UpdateExpression='SET seat1 = :newStatus1, seat2 = :newStatus2,$
+                ExpressionAttributeValues={
+                        ':newStatus1': 0,
+ ':newStatus2': 1,
+                        ':newStatus3': 1,
+                        ':newStatus4': 1,
+                        ':newAvail': 1
+                }
+        )
+
+elif (userAvail == "2"):
+
+        table.update_item(
+                Key={
+                        'tableID': 23,
+                },
+                UpdateExpression='SET seat1 = :newStatus1, seat2 = :newStatus2,$
+                ExpressionAttributeValues={
+                        ':newStatus1': 0,
+                        ':newStatus2': 0,
+                        ':newStatus3': 1,
+                        ':newStatus4': 1,
+                        ':newAvail': 2
+                }
+        )
+
+elif (userAvail == "3"):
+
+        table.update_item(
+                Key={
+                        'tableID': 23,
+                },
+                UpdateExpression='SET seat1 = :newStatus1, seat2 = :newStatus2,$
+                ExpressionAttributeValues={
+                        ':newStatus1': 0,
+                        ':newStatus2': 0,
+                        ':newStatus3': 0,
+                        ':newStatus4': 1,
+                        ':newAvail': 3
+                }
+        )
+
+elif (userAvail == "4"):
+
+        table.update_item(
+                Key={
+                        'tableID': 23,
+                },
+                UpdateExpression='SET seat1 = :newStatus1, seat2 = :newStatus2,$
+                ExpressionAttributeValues={
+                        ':newStatus1': 0,
+                        ':newStatus2': 0,
+                        ':newStatus3': 0,
+                        ':newStatus4': 0,
+                        ':newAvail': 4
+                }
+        )
+
+else:
+        print("Wrong number, no change was made\n")
+
+
+#show tables new status, as updated from Pi
+new = table.get_item(
+        Key={
+                'tableID': 23
+        },
+        ProjectionExpression='tableAvail, seat1, seat2, seat3, seat4'
+)
+item = new['Item']
+print("This is the table's new, updated status:\n")
+print(item)
+
+
+
+
+
